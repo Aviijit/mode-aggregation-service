@@ -1,0 +1,8 @@
+.gradle
+build
+.git
+.gitignore
+Dockerfile
+compose.yml
+node_modules
+*.log

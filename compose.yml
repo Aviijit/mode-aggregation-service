@@ -1,0 +1,46 @@
+services:
+  transform-svc:
+    image: ${TRANSFORM_IMAGE:-ghcr.io/tinkermode/eng-foundation-takehome/transform-svc:v0.1.0}
+    ports:
+      - "19000:9000"  # exposed for evaluator (POST /config for latency injection)
+
+  storage-svc:
+    image: ${STORAGE_IMAGE:-ghcr.io/tinkermode/eng-foundation-takehome/storage-svc:v0.1.0}
+    ports:
+      - "19001:9001"
+
+  edge-simulator:
+    image: ${SIMULATOR_IMAGE:-ghcr.io/tinkermode/eng-foundation-takehome/edge-simulator:v0.1.0}
+    environment:
+      AGGREGATION_HOST: "aggregation-svc"
+      AGGREGATION_PORT: "8080"
+    depends_on:
+      aggregation-svc:
+        condition: service_healthy  # waits until GET /healthz returns 200
+
+
+  aggregation-svc:
+    build:
+      context: .
+    image: tinkermode/aggregation-svc:latest
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      TRANSFORM_SVC_URL: "http://transform-svc:9000"
+      STORAGE_SVC_URL: "http://storage-svc:9001"
+      TRANSFORM_WORKERS: "30"
+      INGEST_QUEUE_CAPACITY: "10000"
+      STORAGE_QUEUE_CAPACITY: "10000"
+      BATCH_SIZE: "100"
+      BATCH_FLUSH_MS: "500"
+
+    depends_on:
+      - transform-svc
+      - storage-svc
+
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/healthz || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

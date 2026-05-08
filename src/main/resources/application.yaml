@@ -1,0 +1,30 @@
+server:
+  shutdown: graceful  # Graceful shutdown - finish in-flight requests before stopping
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: aggregation-service
+
+
+app:
+  transform-svc-url: ${TRANSFORM_SVC_URL:http://transform-svc:9000}
+  storage-svc-url: ${STORAGE_SVC_URL:http://storage-svc:9001}
+  transform-workers: ${TRANSFORM_WORKERS:30}
+  ingest-queue-capacity: ${INGEST_QUEUE_CAPACITY:10000}
+  storage-queue-capacity: ${STORAGE_QUEUE_CAPACITY:10000}
+  batch-size: ${BATCH_SIZE:100}
+  batch-flush-ms: ${BATCH_FLUSH_MS:500}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.tinkermode.aggregation: INFO

@@ -19,7 +19,7 @@ class HttpException(val statusCode: Int, message: String) : RuntimeException(mes
 
 /**
  *  429 was received. [retryAfterMs] is derived from the
- *  Retry-After response header (defaults to [fallbackDelayMs] when absent).
+ *  Retry-After response header (defaults to fallbackDelayMs when absent).
  */
 class RateLimitException(val retryAfterMs: Long, message: String) : RuntimeException(message)
 
@@ -31,7 +31,7 @@ class RateLimitException(val retryAfterMs: Long, message: String) : RuntimeExcep
  *
  * Retry rules:
  *  - 5xx HttpException -> retry with backoff
- *  - RateLimitException -> delay exactly [retryAfterMs] then retry
+ *  - RateLimitException -> delay exactly retryAfterMs then retry
  *  - 4xx HttpException -> rethrow immediately (non-retryable)
  *  - Any other exception -> rethrow immediately
  *

@@ -24,28 +24,20 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-	// Jackson - kotlin support
+
+	// Jackson - kotlin  & Kotlin coroutines (Channels, worker pool, batcher)
 	implementation("tools.jackson.module:jackson-module-kotlin")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	// Kotlin coroutines (Channels, worker pool, batcher)
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
-	/*// OpenAPI / Swagger UI
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
-
-	// Structured JSON logging
-	implementation("net.logstash.logback:logstash-logback-encoder:9.0")
-*/
 
 	// Test - single starter covers everything (JUnit5, AssertJ, MockMvc etc.)
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-//	{
-//		exclude(module = "mockito-core")   // using MockK instead
-//	}
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
 
 
 }
@@ -58,8 +50,4 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-
-	testLogging {
-		events("passed", "skipped", "failed")
-	}
 }

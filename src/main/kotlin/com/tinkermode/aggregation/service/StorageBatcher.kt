@@ -22,22 +22,22 @@ class StorageBatcher(
 
     /**
      * A plain Channel used as a tick signal — avoids the ObsoleteCoroutinesApi
-     * ticker. A separate coroutine sends Unit every [props.batchFlushMs] ms.
+     * ticker. A separate coroutine sends Unit every props.batchFlushMs ms.
      */
     private val tickChannel = Channel<Unit>(capacity = Channel.CONFLATED)
 
     /**
      * Starts a single coroutine that owns the batch buffer exclusively.
-     * No shared mutable state — only this coroutine ever touches [batch].
+     * No shared mutable state - only this coroutine ever touches batch.
      *
      * Flushes when:
-     *  - batch reaches [props.batchSize] (max 100)
-     *  - [props.batchFlushMs] elapses since last flush (via tickChannel)
+     *  - batch reaches props.batchSize (max 100)
+     *  - props.batchFlushMs elapses since last flush (via tickChannel)
      */
     fun start() {
         log.info("Starting storage batcher (batchSize=${props.batchSize}, flushMs=${props.batchFlushMs})")
 
-        // Timer coroutine — sends a tick every batchFlushMs
+        // Timer coroutine - sends a tick every batchFlushMs
         appScope.launch {
             while (true) {
                 delay(props.batchFlushMs.milliseconds)
@@ -77,7 +77,7 @@ class StorageBatcher(
                     }
                 }
             } finally {
-                // Safety net: flush anything remaining on unexpected coroutine exit
+                // flush anything remaining on unexpected coroutine exit
                 if (batch.isNotEmpty()) {
                     log.warn("Batcher exiting with ${batch.size} unflushed records — attempting final flush")
                     runCatching { flush(batch) }
@@ -95,7 +95,7 @@ class StorageBatcher(
             val stored = storageClient.write(snapshot)
             log.info("Stored $stored/${snapshot.size} records")
         } catch (e: Exception) {
-            // After all retries, log with full detail - nothing silently dropped.
+            // After all retries, log with full detail - nothing will be dropped silently.
             log.error(
                 "Failed to write batch of ${snapshot.size} records after retries: ${e.message}. " +
                         "Device IDs: ${snapshot.map { it.deviceId }}"

@@ -15,7 +15,7 @@ class CoroutineConfig {
      * worker crashing after retries are exhausted) does NOT cancel the entire
      * scope and bring down all other workers.
      *
-     * The scope is canceled in AggregationServiceApplication.onDestroy()
+     * The scope is cancelled in AggregationServiceApplication.onDestroy()
      * during graceful shutdown.
      */
     @Bean

@@ -1,10 +1,6 @@
 package com.tinkermode.aggregation.web
 
-import com.tinkermode.aggregation.model.ErrorResponse
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
